@@ -4,9 +4,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'process';
 import { ConfigModule } from '@nestjs/config';
-import { BusinessPlanModule } from './business_plan/business_plan.module';
-import { BusinessPlan } from './business_plan/entities/business_plan.entity';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -20,8 +17,7 @@ import { BusinessPlan } from './business_plan/entities/business_plan.entity';
       entities: [],
       synchronize: true,
       autoLoadEntities: true,
-    }),
-    BusinessPlanModule,],
+    }),],
   controllers: [AppController],
   providers: [AppService],
 })
