@@ -8,6 +8,9 @@ import { BiomesModule } from './biomes/biomes.module';
 import { PokemonsModule } from './pokemons/pokemons.module';
 import { JdPokemon } from './pokemons/entities/pokemon.entity';
 import { JdBiome } from './biomes/entities/biome.entity';
+import { OcrModule } from './ocr/ocr.module';
+import { MulterModule } from '@nestjs/platform-express';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,9 +25,15 @@ import { JdBiome } from './biomes/entities/biome.entity';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    MulterModule.register({
+      dest: './uploads', // Le répertoire où les fichiers seront stockés
+    }),
     BiomesModule,
-    PokemonsModule,],
-  controllers: [AppController],
-  providers: [AppService],
+    PokemonsModule,
+    OcrModule,
+
+  ],
+  controllers: [AppController,],
+  providers: [AppService,],
 })
 export class AppModule { }
