@@ -1,1 +1,1 @@
-export class CreateOcrDto {}
+export class CreateOcrDto { }

@@ -1,20 +1,23 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
-import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 
 @Controller('pokemons')
 export class PokemonsController {
   constructor(private readonly pokemonsService: PokemonsService) { }
 
-  // @Post()
-  // create(@Body() createPokemonDto: CreatePokemonDto[]) {
-  //   return this.pokemonsService.create(createPokemonDto);
-  // }
-
   @Post()
-  asignBiome(@Body() pokelist: string[]) {
-    return this.pokemonsService.asignBiome(pokelist);
+  create(@Body() createPokemonDto: CreatePokemonDto[]) {
+    return this.pokemonsService.create(createPokemonDto);
+  }
+
+  @Post('asignBiome')
+  asignBiome(@Body() body: { pokelist: string[], biomeId: number }) {
+    return this.pokemonsService.asignBiome(body.pokelist, body.biomeId);
+  }
+  @Post('debug')
+  debugBiome(@Body() pokelist: string[]) {
+    return this.pokemonsService.debugBiome(pokelist);
   }
 
   @Post('bingo')
