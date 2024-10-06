@@ -51,7 +51,7 @@ export class PokemonsService {
   bingo(pokelist: string[]) {
     return this.pokeRepo.find(
       {
-        select: { name: true, idDex: true, biomes: { name: true } },
+        select: { name: true, idDex: true, imgUrl: true, biomes: { name: true } },
         relations: { biomes: true },
         order: { biomes: { name: "ASC" } },
         where: { name: In(pokelist) }
