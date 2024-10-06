@@ -25,9 +25,7 @@ import { MulterModule } from '@nestjs/platform-express';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    MulterModule.register({
-      dest: './uploads', // Le répertoire où les fichiers seront stockés
-    }),
+    MulterModule.register(),
     BiomesModule,
     PokemonsModule,
     OcrModule,
