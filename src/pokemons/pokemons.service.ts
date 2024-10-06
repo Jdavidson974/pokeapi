@@ -3,15 +3,40 @@ import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JdPokemon } from './entities/pokemon.entity';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { BiomesService } from 'src/biomes/biomes.service';
+import { HttpService } from '@nestjs/axios';
+import { tap } from 'rxjs';
 
 @Injectable()
 export class PokemonsService {
   constructor(
     @InjectRepository(JdPokemon) private pokeRepo: Repository<JdPokemon>,
-    private biomesService: BiomesService
+    private biomesService: BiomesService,
+    private readonly httpService: HttpService
   ) { }
+  //Add img on pokemons
+  addImgOnPokemons() {
+    return this.pokeRepo.find({ select: { id: true, name: true, idDex: true, imgUrl: true }, where: { imgUrl: IsNull() } }).then(
+      pokemons => {
+        console.log(pokemons);
+        return pokemons.forEach(async pokemon => {
+          //todo faire la req
+          this.httpService.get('https://pokeapi.co/api/v2/pokemon/' + pokemon.idDex).pipe(
+            tap(data => {
+              if (data.data) {
+                const imgurl = data.data.sprites.front_default;
+                pokemon.imgUrl = imgurl;
+                console.log(pokemon);
+                this.pokeRepo.save(pokemon)
+              }
+            })
+          ).subscribe();
+        })
+        //return this.pokeRepo.save(pokemons);
+      }
+    )
+  }
   //Create pokemon
   create(createPokemonDto: CreatePokemonDto[]) {
     const pokemons: JdPokemon[] = [];

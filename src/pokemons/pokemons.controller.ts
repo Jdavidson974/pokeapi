@@ -6,6 +6,11 @@ import { CreatePokemonDto } from './dto/create-pokemon.dto';
 export class PokemonsController {
   constructor(private readonly pokemonsService: PokemonsService) { }
 
+  @Post('bingo')
+  bingo(@Body() pokelist: string[]) {
+    return this.pokemonsService.bingo(pokelist);
+  }
+
   // @Post()
   // create(@Body() createPokemonDto: CreatePokemonDto[]) {
   //   return this.pokemonsService.create(createPokemonDto);
@@ -16,8 +21,8 @@ export class PokemonsController {
   //   return this.pokemonsService.asignBiome(body.pokelist, body.biomeId);
   // }
 
-  @Post('bingo')
-  bingo(@Body() pokelist: string[]) {
-    return this.pokemonsService.bingo(pokelist);
-  }
+  // @Get('addAllPokemonImg')
+  // addAllPokemonImg() {
+  //   return this.pokemonsService.addImgOnPokemons()
+  // }
 }

@@ -12,6 +12,8 @@ export class JdPokemon {
     @Column()
     idDex: number;
 
+    @Column({ default: null })
+    imgUrl: string;
     @JoinTable()
     @ManyToMany(() => JdBiome, (biome) => biome.pokemons)
     biomes: JdBiome[];
