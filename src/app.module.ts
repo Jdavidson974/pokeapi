@@ -8,7 +8,6 @@ import { BiomesModule } from './biomes/biomes.module';
 import { PokemonsModule } from './pokemons/pokemons.module';
 import { JdPokemon } from './pokemons/entities/pokemon.entity';
 import { JdBiome } from './biomes/entities/biome.entity';
-import { OcrModule } from './ocr/ocr.module';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
@@ -28,8 +27,6 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register(),
     BiomesModule,
     PokemonsModule,
-    OcrModule,
-
   ],
   controllers: [AppController,],
   providers: [AppService,],
