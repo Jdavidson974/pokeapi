@@ -6,13 +6,13 @@ import { OcrService } from './ocr.service';
 export class OcrController {
   constructor(private readonly ocrService: OcrService) { }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { dest: '.uploads' })) // Assurez-vous que 'file' correspond à la clé du champ dans Postman
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new Error('Aucun fichier téléchargé');
-    }
-    const text = await this.ocrService.recognizeText(file.path); // Utilise file.path
-    return { text };
-  }
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file', { dest: 'src/uploads' })) // Assurez-vous que 'file' correspond à la clé du champ dans Postman
+  // async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   if (!file) {
+  //     throw new Error('Aucun fichier téléchargé');
+  //   }
+  //   const text = await this.ocrService.recognizeText(file.path); // Utilise file.path
+  //   return { text };
+  // }
 }
