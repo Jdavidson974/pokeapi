@@ -12,8 +12,6 @@ export class OcrController {
     if (!file) {
       throw new Error('Aucun fichier téléchargé');
     }
-    console.log('Fichier reçu :', file); // Vérifie que tu reçois le fichier
-
     const text = await this.ocrService.recognizeText(file.path); // Utilise file.path
     return { text };
   }

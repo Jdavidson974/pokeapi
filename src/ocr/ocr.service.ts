@@ -13,9 +13,6 @@ export class OcrService {
       const result = await Tesseract.recognize(
         imageBuffer,
         'eng', // Changez la langue selon vos besoins
-        {
-          logger: info => console.log(info), // Pour suivre les logs du processus OCR
-        },
       );
       console.log(result.data.text);
 

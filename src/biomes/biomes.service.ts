@@ -11,23 +11,7 @@ export class BiomesService {
   constructor(@InjectRepository(JdBiome) private biomeRepo: Repository<JdBiome>) {
 
   }
-  create(pokelist: JdPokemon[]) {
-    // return this.biomeRepo.find({ where: { name: "Land" } }).then();
-  }
-
-  findAll() {
-    return `This action returns all biomes`;
-  }
-
   findOne(id: number) {
     return this.biomeRepo.findOneBy({ id: id });
-  }
-
-  update(id: number, updateBiomeDto: UpdateBiomeDto) {
-    return `This action updates a #${id} biome`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} biome`;
   }
 }

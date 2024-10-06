@@ -12,6 +12,7 @@ export class PokemonsService {
     @InjectRepository(JdPokemon) private pokeRepo: Repository<JdPokemon>,
     private biomesService: BiomesService
   ) { }
+  //Create pokemon
   create(createPokemonDto: CreatePokemonDto[]) {
     const pokemons: JdPokemon[] = [];
     createPokemonDto.map((pokemon: JdPokemon) => {
@@ -19,12 +20,9 @@ export class PokemonsService {
       pokemon.name = pokename
       pokemons.push(pokemon)
     })
-
-    console.log(pokemons);
-
     return this.pokeRepo.save(pokemons);
   }
-
+  //Get pokemon and biome for bingo
   bingo(pokelist: string[]) {
     return this.pokeRepo.find(
       {
@@ -34,7 +32,7 @@ export class PokemonsService {
         where: { name: In(pokelist) }
       });
   }
-
+  //Asign Biome for pokemon
   asignBiome(pokelist: string[], biomeID: number) {
     return this.pokeRepo.find(
       {
@@ -52,36 +50,5 @@ export class PokemonsService {
           return this.pokeRepo.save(pokemons)
         })
       });
-  }
-
-  debugBiome(pokelist: string[]) {
-    return this.pokeRepo.find(
-      {
-        select: { id: true, name: true, idDex: true, biomes: { id: true, name: true } },
-        relations: { biomes: true },
-        order: { name: "ASC" },
-        where: { name: In(pokelist) }
-      }).then(pokemons => {
-        return this.biomesService.findOne(3).then(biome => {
-          const newPokemons = pokemons.map(pokemon => {
-            pokemon.biomes.pop()
-            console.log(pokemon.name);
-            console.log(pokemon.biomes);
-
-          });
-          return newPokemons
-        })
-      });
-  }
-  findOne(id: number) {
-    return `This action returns a #${id} pokemon`;
-  }
-
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
   }
 }
