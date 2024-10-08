@@ -49,13 +49,18 @@ export class PokemonsService {
   }
   //Get pokemon and biome for bingo
   bingo(pokelist: string[]) {
-    return this.pokeRepo.find(
-      {
-        select: { name: true, idDex: true, imgUrl: true, biomes: { name: true } },
-        relations: { biomes: true },
-        order: { biomes: { name: "ASC" } },
-        where: { name: In(pokelist) }
-      });
+    const placeholders = pokelist.map(() => '?').join(', ');
+    const query = `
+    SELECT jd_biome.name, COUNT(jd_pokemon.id) AS PokeNumber, GROUP_CONCAT(jd_pokemon.name SEPARATOR ', ') As PokeList
+    FROM jd_biome 
+    INNER JOIN jd_pokemon_biomes_jd_biome ON jd_pokemon_biomes_jd_biome.jdBiomeId = jd_biome.id 
+    INNER JOIN jd_pokemon ON jd_pokemon_biomes_jd_biome.jdPokemonId = jd_pokemon.id 
+    WHERE jd_pokemon.name IN (${placeholders}) 
+    GROUP BY jd_biome.name
+    ORDER BY PokeNumber DESC 
+  `;
+
+    return this.pokeRepo.query(query, pokelist);
   }
   //Asign Biome for pokemon
   asignBiome(pokelist: string[], biomeID: number) {
