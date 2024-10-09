@@ -49,9 +49,9 @@ export class PokemonsService {
   }
   //Get pokemon and biome for bingo
   bingo(pokelist: string[]) {
-    const placeholders = pokelist.map(() => '?').join(', ');
+    const placeholders = pokelist.map(() => '?').join(',');
     const query = `
-    SELECT jd_biome.name, COUNT(jd_pokemon.id) AS PokeNumber, GROUP_CONCAT(jd_pokemon.name SEPARATOR ', ') As PokeList
+    SELECT jd_biome.name, COUNT(jd_pokemon.id) AS pokeNumber, GROUP_CONCAT(jd_pokemon.name SEPARATOR ', ') As pokeList
     FROM jd_biome 
     INNER JOIN jd_pokemon_biomes_jd_biome ON jd_pokemon_biomes_jd_biome.jdBiomeId = jd_biome.id 
     INNER JOIN jd_pokemon ON jd_pokemon_biomes_jd_biome.jdPokemonId = jd_pokemon.id 
@@ -60,7 +60,36 @@ export class PokemonsService {
     ORDER BY PokeNumber DESC 
   `;
 
-    return this.pokeRepo.query(query, pokelist);
+    return this.pokeRepo.query(query, pokelist).then(
+      result => {
+        return Promise.all(
+          result.map((data: {
+            pokebingo: JdPokemon[]; name: string, pokeList: any, nbPokebingo: number
+          }) => {
+            const pokeListOnBiome: string[] = data.pokeList.split(",").map(el => el.trim());
+            return this.pokeRepo.find({ select: { id: true, name: true, imgUrl: true }, where: { name: In(pokeListOnBiome) } }).then(
+              pokemons => {
+                data.pokeList = pokemons;
+                return data
+              }
+            )
+          })
+        ).then(data => {
+          // Utilisation de FIELD pour conserver l'ordre du tableau pokelist
+          const orderByClause = `FIELD(name, ${pokelist.map(name => `'${name}'`).join(', ')})`;
+
+          const orderedQuery = `
+            SELECT id, name, imgUrl 
+            FROM jd_pokemon 
+            WHERE name IN (${pokelist.map(() => '?').join(', ')}) 
+            ORDER BY ${orderByClause}
+          `;
+          return this.pokeRepo.query(orderedQuery, pokelist).then((pokeBingo: JdPokemon[]) => {
+            return { data, pokeBingo, count: pokeBingo.length };
+          });
+        });
+      }
+    );
   }
   //Asign Biome for pokemon
   asignBiome(pokelist: string[], biomeID: number) {

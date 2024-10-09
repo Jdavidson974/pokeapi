@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 
@@ -8,7 +8,17 @@ export class PokemonsController {
 
   @Post('bingo')
   bingo(@Body() pokelist: string[]) {
-    return this.pokemonsService.bingo(pokelist);
+    try {
+      const pokelistArray = pokelist[0].split(" ").map(el => el.trim())
+      const bingoCase = 25
+      if (pokelistArray.length == bingoCase) {
+        return this.pokemonsService.bingo(pokelistArray);
+      } else {
+        return new HttpException('You must have a 25 pokemon in the list. Actually you have ' + pokelistArray.length, HttpStatus.BAD_REQUEST)
+      }
+    } catch (e) {
+      throw new HttpException("Erreur Format", HttpStatus.BAD_REQUEST)
+    }
   }
 
   // @Post()
